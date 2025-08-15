@@ -1,5 +1,6 @@
 import os
 import sys
+import tempfile
 # DON'T CHANGE THIS !!!
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
@@ -16,8 +17,17 @@ app.config['SECRET_KEY'] = 'asdf#FGSgvasgf$5$WGT'
 app.register_blueprint(user_bp, url_prefix='/api')
 app.register_blueprint(chat_bp, url_prefix='/api')
 
-# uncomment if you need to use database
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}"
+# Railway環境では/tmpディレクトリを使用、ローカルでは./src/databaseを使用
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    # Railwayでは一時ディレクトリを使用（セッション間でデータは保持されない）
+    db_path = os.path.join(tempfile.gettempdir(), 'app.db')
+else:
+    # ローカル環境では既存のパスを使用
+    db_dir = os.path.join(os.path.dirname(__file__), 'database')
+    os.makedirs(db_dir, exist_ok=True)
+    db_path = os.path.join(db_dir, 'app.db')
+
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 with app.app_context():

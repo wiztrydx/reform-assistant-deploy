@@ -14,7 +14,7 @@ def chat():
             return jsonify({'error': 'No data provided'}), 400
         
         # Claude APIキーを環境変数から取得
-        api_key = os.getenv('CLAUDE_API_KEY')
+        api_key = os.getenv('ANTHROPIC_API_KEY')
         if not api_key:
             return jsonify({'error': 'API key not configured'}), 500
         
@@ -68,7 +68,7 @@ def initial_message():
             return jsonify({'error': 'No data provided'}), 400
         
         # Claude APIキーを環境変数から取得
-        api_key = os.getenv('CLAUDE_API_KEY')
+        api_key = os.getenv('ANTHROPIC_API_KEY')
         if not api_key:
             return jsonify({'error': 'API key not configured'}), 500
         
